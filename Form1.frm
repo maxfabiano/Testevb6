@@ -1006,7 +1006,7 @@ Dim rs As ADODB.Recordset
     ' Query to get transactions from the last month
     sql = "SELECT Numero_Cartao, Valor_Transacao, Data_Transacao, Descricao, CategorizarTransacao(Valor_Transacao) AS Categoria " & _
           "FROM Transacoes " & _
-          "WHERE Data_Transacao >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)"
+          "WHERE Status = 1 AND Data_Transacao >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)"
     Set conn = New ADODB.Connection
     conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
     conn.CursorLocation = adUseClient ' Set the cursor location to client-side for a bookmarkable recordset
@@ -1028,13 +1028,13 @@ Dim rs As ADODB.Recordset
     Open saveFilePath For Output As #fileNum
     
     ' Write the header line
-    linha = "Numero_Cartao,Valor_Transacao,Data_Transacao,Descricao,Categoria"
+    linha = "Numero Cartao,Valor Transacao,Data Transacao,Descricao,Categoria"
     Print #fileNum, linha
     
     ' Write the data from the recordset
     Do Until rs.EOF
         linha = rs("Numero_Cartao") & "," & _
-                Format(rs("Valor_Transacao"), "#,##0.00") & "," & _
+                Replace(CStr(rs("Valor_Transacao")), ",", ".") & "," & _
                 rs("Data_Transacao") & "," & _
                 rs("Descricao") & "," & _
                 rs("Categoria")
