@@ -1,0 +1,4 @@
+FormTelaInicial = 117, 174, 996, 600, , 26, 26, 905, 634, C
+FormCliente = 156, 156, 1033, 580, , 52, 52, 929, 476, C
+frmExcluirTransacao = 104, 104, 981, 528, , 78, 78, 955, 502, C
+frmEditarTransacao = 0, 0, 877, 424, Z, 208, 208, 1085, 632, C
