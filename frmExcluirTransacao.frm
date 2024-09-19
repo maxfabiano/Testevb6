@@ -39,6 +39,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Private BancoConf As Object
+Dim conectionStr As String
+
 Private Sub btnExcluir_Click()
 Dim selectedItem As String
     Dim Id_Transacao As String
@@ -56,7 +59,7 @@ Dim selectedItem As String
         sql = "DELETE FROM Transacoes WHERE Id_Transacao = " & Id_Transacao
         
         Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
         ' Execute the delete query
         conn.Execute sql
@@ -79,12 +82,14 @@ End Sub
 
 
 Private Sub Form_Load()
+Set BancoConf = New Banco_Conf
+     conectionStr = BancoConf.conectionString
     Dim rs As ADODB.Recordset
     Dim sql As String
 
     ' Initialize and open the connection
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
 
     ' Clear the ListBox before populating
@@ -137,7 +142,7 @@ Dim rs As ADODB.Recordset
           "WHERE Numero_Cartao LIKE '%" & searchTerm & "%' OR " & _
           "Valor_Transacao LIKE '%" & searchTerm & "%' LIMIT 10"
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
     ' Open the Recordset
     Set rs = New ADODB.Recordset

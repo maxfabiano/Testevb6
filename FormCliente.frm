@@ -109,7 +109,12 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Private BancoConf As Object
+Dim conectionStr As String
+
 Private Sub BCadastrar_Click()
+Set BancoConf = New Banco_Conf
+     conectionStr = BancoConf.conectionString
 Dim rs As ADODB.Recordset
     Dim sql As String
     Dim numeroCartao As String
@@ -130,7 +135,7 @@ Dim rs As ADODB.Recordset
     ' Verifica se o cliente com o número do cartão já existe
     sql = "SELECT * FROM Clientes WHERE Numero_Cartao = '" & numeroCartao & "'"
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
     Set rs = New ADODB.Recordset
     rs.Open sql, conn, adOpenStatic, adLockReadOnly

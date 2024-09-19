@@ -300,6 +300,9 @@ Dim Numero_Cartao As String
 Dim Valor_Transacao As String
 Dim Data_Transacao As String
 Dim Descricao As String
+Private BancoConf As Object
+Dim conectionStr As String
+
 Private Declare Function GetSaveFileName Lib "comdlg32.dll" Alias "GetSaveFileNameA" (pOpenfilename As OPENFILENAME) As Long
 
 
@@ -378,7 +381,7 @@ Private Sub consultar_Click()
 
 
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Adjust your connection string
+    conn.ConnectionString = conectionStr ' Adjust your connection string
     conn.CursorLocation = adUseClient ' Set the cursor location to client-side for a bookmarkable recordset
     conn.Open
     ' Create and configure the Command object
@@ -601,7 +604,7 @@ Dim rs As ADODB.Recordset
     sql = "SELECT Numero_Cartao FROM Clientes " & _
           "WHERE Numero_Cartao LIKE '%" & searchTerm & "%'"
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.CursorLocation = adUseClient
     conn.Open
     ' Open the Recordset
@@ -616,6 +619,8 @@ Dim rs As ADODB.Recordset
 End Sub
 
 Private Sub Form_Load()
+    Set BancoConf = New Banco_Conf
+     conectionStr = BancoConf.conectionString
     ' Initialize the connection
     Set conn = New ADODB.Connection
     conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;"
@@ -639,7 +644,7 @@ Dim rs As ADODB.Recordset
 
     ' Initialize and open the connection
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
 
     ' Clear the ListBox before populating
@@ -1008,7 +1013,7 @@ Dim rs As ADODB.Recordset
           "FROM Transacoes " & _
           "WHERE Status = 1 AND Data_Transacao >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)"
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.CursorLocation = adUseClient ' Set the cursor location to client-side for a bookmarkable recordset
     conn.Open
     ' Create a new ADODB.Recordset object and execute the query
@@ -1062,7 +1067,7 @@ Dim sql As String
     
     ' Initialize and open the connection
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.CursorLocation = adUseClient ' Set the cursor location to client-side for a bookmarkable recordset
     conn.Open
     
@@ -1111,7 +1116,7 @@ Dim sql As String
     ' Construct the SQL query to filter by Numero_Cartao and date range
     sql = "SELECT * FROM Transacoes WHERE Data_Transacao >= ? AND Data_Transacao <= ? "
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.CursorLocation = adUseClient ' Set the cursor location to client-side for a bookmarkable recordset
     conn.Open
     ' Create and configure the Command object
@@ -1156,7 +1161,7 @@ Dim sql As String
     ' Construct the SQL query to filter by Numero_Cartao and date range
     sql = "SELECT * FROM vw_TransacoesComCategoria WHERE Data_Transacao >= ? AND Data_Transacao <= ? "
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.CursorLocation = adUseClient ' Set the cursor location to client-side for a bookmarkable recordset
     conn.Open
     ' Create and configure the Command object

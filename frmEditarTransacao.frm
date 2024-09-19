@@ -84,6 +84,9 @@ Attribute VB_GlobalNameSpace = False
 Attribute VB_Creatable = False
 Attribute VB_PredeclaredId = True
 Attribute VB_Exposed = False
+Private BancoConf As Object
+Dim conectionStr As String
+
 Private Sub ExecuteSQL(sql As String)
     On Error GoTo ErrorHandler
     conn.Execute sql
@@ -125,7 +128,7 @@ Dim sql As String
     ' Prepare the SQL Update query
     sql = "UPDATE Transacoes SET Numero_Cartao = ?, Valor_Transacao = ?, Data_Transacao = ? WHERE Id_Transacao = ?"
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
     ' Create the Command object
     Set cmd = New ADODB.Command
@@ -186,7 +189,7 @@ Private Function CartaoExiste(Numero_Cartao As String) As Boolean
     ' SQL query to check if the card number exists in the Clientes table
     sql = "SELECT Numero_Cartao FROM my_database.Clientes WHERE Numero_Cartao = '" & Numero_Cartao & "'"
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
     ' Initialize recordset and execute the query
     Set rs = New ADODB.Recordset
@@ -210,7 +213,7 @@ Dim rs As ADODB.Recordset
 
     ' Initialize and open the connection
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
 
     ' Clear the ListBox before populating
@@ -219,7 +222,7 @@ Dim rs As ADODB.Recordset
     ' Define the SQL query to get all the transactions
     sql = "SELECT Numero_Cartao, Nome_Cliente FROM Clientes LIMIT 10"
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
     ' Open the Recordset
     Set rs = New ADODB.Recordset
@@ -273,7 +276,7 @@ Dim rs As ADODB.Recordset
     sql = "SELECT Numero_Cartao FROM Clientes " & _
           "WHERE Numero_Cartao LIKE '%" & searchTerm & "%'"
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.CursorLocation = adUseClient
     conn.Open
     ' Open the Recordset
@@ -309,12 +312,14 @@ Dim texto As String
 End Sub
 
 Private Sub Form_Load()
+Set BancoConf = New Banco_Conf
+     conectionStr = BancoConf.conectionString
     Dim rs As ADODB.Recordset
     Dim sql As String
 
     ' Initialize and open the connection
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
 
     ' Clear the ListBox before populating
@@ -381,7 +386,7 @@ Private Sub lstTransacoes_Change()
           "WHERE Numero_Cartao LIKE '%" & searchTerm & "%' OR " & _
           "Valor_Transacao LIKE '%" & searchTerm & "%' LIMIT 10"
     Set conn = New ADODB.Connection
-    conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;" ' Include the database name here
+    conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
     ' Open the Recordset
     Set rs = New ADODB.Recordset

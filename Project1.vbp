@@ -12,6 +12,7 @@ Form=Form1.frm
 Form=FormCliente.frm
 Form=frmExcluirTransacao.frm
 Form=frmEditarTransacao.frm
+Class=Banco_Conf; Banco_Conf.cls
 Startup="FormTelaInicial"
 Command32=""
 Name="Project1"
