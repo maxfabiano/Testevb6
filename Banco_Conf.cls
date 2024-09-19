@@ -12,7 +12,14 @@ Attribute VB_Creatable = True
 Attribute VB_PredeclaredId = False
 Attribute VB_Exposed = False
 Public Function conectionString() As String
-    ' Define e retorna a string de conexão
-    conectionString = "DSN=odbc1;UID=root;PWD=root_password;DATABASE=my_database;"
+    ' Define e retorna a string de conexão usada em todo codigo
+    Dim uid As String
+    Dim pwd As String
+    Dim database As String
+    uid = "root"
+    pwd = "root_password"
+    database = "my_database"
+    
+    conectionString = "DSN=odbc1;UID=" + uid + ";PWD=" + pwd + ";DATABASE=" + database + ";"
 End Function
 

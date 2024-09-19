@@ -362,7 +362,7 @@ Public Function CartaoExiste(Numero_Cartao As String) As Boolean
     Dim sql As String
 
     ' SQL query to check if the card number exists in the Clientes table
-    sql = "SELECT Numero_Cartao FROM my_database.Clientes WHERE Numero_Cartao = '" & Numero_Cartao & "'"
+    sql = "SELECT Numero_Cartao FROM Clientes WHERE Numero_Cartao = '" & Numero_Cartao & "'"
     
     ' Initialize recordset and execute the query
     Set rs = New ADODB.Recordset
