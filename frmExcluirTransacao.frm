@@ -138,7 +138,7 @@ Dim rs As ADODB.Recordset
     Next i
     
     ' Define the SQL query to search for transactions based on the search term
-    sql = "SELECT Id_Transacao, Numero_Cartao, Valor_Transacao,Data_Transacao FROM my_database.Transacoes " & _
+    sql = "SELECT Id_Transacao, Numero_Cartao, Valor_Transacao,Data_Transacao FROM Transacoes " & _
           "WHERE Numero_Cartao LIKE '%" & searchTerm & "%' OR " & _
           "Valor_Transacao LIKE '%" & searchTerm & "%' LIMIT 10"
     Set conn = New ADODB.Connection
