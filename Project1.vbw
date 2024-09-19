@@ -1,4 +1,7 @@
-FormTelaInicial = 117, 174, 996, 600, , 26, 26, 905, 634, C
+FormTelaInicial = -17, 163, 862, 589, , 26, 26, 905, 634, C
 FormCliente = 156, 156, 1033, 580, , 52, 52, 929, 476, C
 frmExcluirTransacao = 104, 104, 981, 528, , 78, 78, 955, 502, C
-frmEditarTransacao = 0, 0, 877, 424, Z, 208, 208, 1085, 632, C
+frmEditarTransacao = 0, 0, 877, 424, , 208, 208, 1085, 632, C
+Banco_Conf = 182, 182, 876, 606, 
+Repository = 104, 104, 798, 528, 
+TelaInicialAplication = 78, 78, 772, 502, Z
