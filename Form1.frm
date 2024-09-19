@@ -302,7 +302,7 @@ Dim Data_Transacao As String
 Dim Descricao As String
 Private BancoConf As Object
 Dim conectionStr As String
-
+Private Repositorio As Object
 Private Declare Function GetSaveFileName Lib "comdlg32.dll" Alias "GetSaveFileNameA" (pOpenfilename As OPENFILENAME) As Long
 
 
@@ -332,48 +332,7 @@ End Type
 Private Sub Cadastrar_Cliente_Click()
 FormCliente.Show vbModal ' Exibe o Form2 e bloqueia o Form1 até que o Form2 seja fechado
 End Sub
-Private Sub CriarUsuarioAdmin()
-    Dim rs As ADODB.Recordset
-    Dim sql As String
-    Dim numeroCartao As String
-    Dim nomeCliente As String
-    Dim emailCliente As String
-    Dim telefoneCliente As String
-    Dim dataAtual As String
-    
-    ' Definindo os valores do usuário administrador
-    numeroCartao = "123456"
-    nomeCliente = "Administrador"
-    emailCliente = "admin@exemplo.com"
-    telefoneCliente = "123456789"
-    
-    ' Obtendo a data atual no formato AAAA-MM-DD
-    dataAtual = Format(Date, "yyyy-mm-dd")
-    
-    ' Verifica se o cliente com o número do cartão já existe
-    sql = "SELECT * FROM Clientes WHERE Numero_Cartao = '" & numeroCartao & "'"
-    
-    Set rs = New ADODB.Recordset
-    rs.Open sql, conn, adOpenStatic, adLockReadOnly
-    
-    ' Se não encontrar registros, insere o novo cliente
-    If rs.EOF Then
-        sql = "INSERT INTO Clientes (Numero_Cartao, Nome_Cliente, Email, Telefone) " & _
-              "VALUES ('" & numeroCartao & "', '" & nomeCliente & "', '" & emailCliente & "', '" & telefoneCliente & "')"
-        conn.Execute sql
-        
-    Else
-        
-    End If
-    
-    ' Fechar o Recordset
-    rs.Close
-    Set rs = Nothing
-End Sub
 
-Private Sub Command2_Click()
-
-End Sub
 
 Private Sub consultar_Click()
     Dim sql As String
@@ -621,15 +580,17 @@ End Sub
 Private Sub Form_Load()
     Set BancoConf = New Banco_Conf
      conectionStr = BancoConf.conectionString
+     Set Repositorio = New Repository
+     
     ' Initialize the connection
     Set conn = New ADODB.Connection
     conn.ConnectionString = "DSN=odbc1;UID=root;PWD=root_password;"
     conn.Open
     ' Cria todas as tabelas e funções necessárias
-    Call CreateTables
-    Call CreateFunctionCategorizarTransacao
-    Call CreateStoredProcedure
-    Call CreateView
+    Call Repositorio.CreateTables
+    Call Repositorio.CreateFunctionCategorizarTransacao
+    Call Repositorio.CreateStoredProcedure
+    Call Repositorio.CreateView
     
     ' Inicializa os campos de entrada
     ResetInputFields
@@ -731,149 +692,6 @@ Private Sub carregarStrings()
     End If
     Call ConverterDataParaMySQL
 End Sub
-
-
-Private Sub CreateStoredProcedure()
-    Dim sql As String
-    ' Exclui a procedure se já existir
-    sql = "DROP PROCEDURE IF EXISTS sp_TotalTransacoesPorPeriodo;"
-    Call ExecuteSQL(sql)
-    
-    ' Cria a nova stored procedure
-    sql = "CREATE PROCEDURE sp_TotalTransacoesPorPeriodo(" & _
-          "IN Data_Inicial DATE, IN Data_Final DATE) " & _
-          "BEGIN " & _
-          "SELECT Numero_Cartao, SUM(Valor_Transacao) AS Valor_Total, COUNT(*) AS Quantidade_Transacoes " & _
-          "FROM Transacoes " & _
-          "WHERE Data_Transacao BETWEEN Data_Inicial AND Data_Final " & _
-          "GROUP BY Numero_Cartao; " & _
-          "END;"
-    Call ExecuteSQL(sql)
-End Sub
-
-Private Sub CreateTables()
-    Dim sql As String
-    sql = "CREATE DATABASE IF NOT EXISTS my_database"
-
-    ' Executa o SQL no servidor MySQL
-    Call ExecuteSQL(sql)
-
-    ' Define o banco de dados a ser utilizado
-    sql = "USE my_database"
-    Call ExecuteSQL(sql)
-    ' Criação da tabela Clientes
-    sql = "CREATE TABLE IF NOT EXISTS Clientes (" & _
-          "Numero_Cartao INT AUTO_INCREMENT PRIMARY KEY, " & _
-          "Nome_Cliente VARCHAR(100) NOT NULL, " & _
-          "Email VARCHAR(100), " & _
-          "Telefone VARCHAR(20)" & _
-          ");"
-    Call ExecuteSQL(sql)
-
-    ' Criação da tabela Transacoes
-    sql = "CREATE TABLE IF NOT EXISTS Transacoes (" & _
-      "Id_Transacao INT AUTO_INCREMENT PRIMARY KEY, " & _
-      "Numero_Cartao INT, " & _
-      "Valor_Transacao DECIMAL(10,2) NOT NULL, " & _
-      "Data_Transacao DATE NOT NULL, " & _
-      "Descricao VARCHAR(255), " & _
-      "Status INT, " & _
-      "FOREIGN KEY (Numero_Cartao) REFERENCES Clientes(Numero_Cartao) ON DELETE CASCADE" & _
-      ");"
-        Call ExecuteSQL(sql)
-
-
-    ' Criação da tabela Categorias
-    sql = "CREATE TABLE IF NOT EXISTS Categorias (" & _
-          "Id_Categoria INT AUTO_INCREMENT PRIMARY KEY, " & _
-          "Descricao_Categoria VARCHAR(100) NOT NULL" & _
-          ");"
-    Call ExecuteSQL(sql)
-    
-    sql = "INSERT INTO Categorias (Id_Categoria, Descricao_Categoria) " & _
-      "SELECT 1, 'Alta' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM Categorias WHERE Descricao_Categoria = 'Alta') UNION ALL " & _
-      "SELECT 2, 'Média' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM Categorias WHERE Descricao_Categoria = 'Média') UNION ALL " & _
-      "SELECT 3, 'Baixa' FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM Categorias WHERE Descricao_Categoria = 'Baixa');"
-Call ExecuteSQL(sql)
-
-    ' Criação da tabela Transacoes_Categorias
-    sql = "CREATE TABLE IF NOT EXISTS Transacoes_Categorias (" & _
-          "Id INT AUTO_INCREMENT PRIMARY KEY, " & _
-          "Id_Transacao INT, " & _
-          "Id_Categoria INT, " & _
-          "FOREIGN KEY (Id_Transacao) REFERENCES Transacoes(Id_Transacao) ON DELETE CASCADE, " & _
-          "FOREIGN KEY (Id_Categoria) REFERENCES Categorias(Id_Categoria) ON DELETE CASCADE" & _
-          ");"
-    Call ExecuteSQL(sql)
-
-    ' Criação da tabela Auditoria
-    sql = "CREATE TABLE IF NOT EXISTS Auditoria (" & _
-          "Id_Auditoria INT AUTO_INCREMENT PRIMARY KEY, " & _
-          "Descricao VARCHAR(255), " & _
-          "Data_Auditoria TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " & _
-          "Id_Transacao INT, " & _
-          "FOREIGN KEY (Id_Transacao) REFERENCES Transacoes(Id_Transacao) ON DELETE SET NULL" & _
-          ");"
-    Call ExecuteSQL(sql)
-    Call CriarUsuarioAdmin
-End Sub
-
-
-Private Sub CreateView()
-    Dim sql As String
-    
-    ' Exclui a view se já existir
-    sql = "DROP VIEW IF EXISTS vw_TransacoesComCategoria;"
-    Call ExecuteSQL(sql)
-    
-    ' Cria a nova view
-    sql = "CREATE VIEW vw_TransacoesComCategoria AS " & _
-          "SELECT c.Nome_Cliente, t.Numero_Cartao, t.Valor_Transacao, t.Data_Transacao, " & _
-          "cat.Descricao_Categoria AS Categoria " & _
-          "FROM Transacoes t " & _
-          "JOIN Clientes c ON t.Numero_Cartao = c.Numero_Cartao " & _
-          "LEFT JOIN Transacoes_Categorias tc ON t.Id_Transacao = tc.Id_Transacao " & _
-          "LEFT JOIN Categorias cat ON tc.Id_Categoria = cat.Id_Categoria;"
-    Call ExecuteSQL(sql)
-End Sub
-
-Private Sub CreateFunctionCategorizarTransacao()
-    Dim sql As String
-
-    ' Exclui a função se já existir
-    sql = "DROP FUNCTION IF EXISTS CategorizarTransacao;"
-    Call ExecuteSQL(sql)
-
-    ' Cria a função CategorizarTransacao
-    sql = "CREATE FUNCTION CategorizarTransacao(Valor DECIMAL(10,2)) " & _
-          "RETURNS VARCHAR(10) " & _
-          "DETERMINISTIC " & _
-          "BEGIN " & _
-          "   IF Valor > 1000 THEN " & _
-          "       RETURN 'Alta'; " & _
-          "   ELSEIF Valor BETWEEN 500 AND 1000 THEN " & _
-          "       RETURN 'Média'; " & _
-          "   ELSE " & _
-          "       RETURN 'Baixa'; " & _
-          "   END IF; " & _
-          "END;"
-    Call ExecuteSQL(sql)
-End Sub
-
-Private Sub ExecuteSQL(sql As String)
-    On Error GoTo ErrorHandler
-    conn.Execute sql
-    Exit Sub
-
-ErrorHandler:
-    MsgBox "Erro ao executar SQL: " & Err.Description
-End Sub
-
-
-
-
-
-
 
 Private Sub ConsultarTransacoes()
     Dim sql As String
