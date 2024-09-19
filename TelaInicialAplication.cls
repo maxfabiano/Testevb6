@@ -232,7 +232,7 @@ Dim texto As String
 End Sub
 
 
-Public Sub FDescricao_Change(FDescricao As TextBox)
+Public Sub FDescricaoChange(FDescricao As TextBox)
 FDescricao.Text = RemoveSpecialCharacters(FDescricao.Text)
 End Sub
 Public Function RemoveSpecialCharacters(inputString As String) As String
