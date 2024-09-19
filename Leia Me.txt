@@ -1,4 +1,4 @@
-para alterar a conexao basta alterar a classe Banco_Conf
+Lembrando foi feito para MYSQL para alterar a conexao basta alterar a classe Banco_Conf
 
 Usar schema de nome my_database usuário root senha root_password usar nome da conexao odbc1  
 
