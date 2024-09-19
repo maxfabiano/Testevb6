@@ -481,7 +481,7 @@ Public Function RemoveNonNumeric(inputString As String) As String
 End Function
 
 
-Public Sub inserirClick(DataGrid1 As DataGrid, FNumero_Cartao As ComboBox, FValor_Transacao As TextBox, FData_Transacao As TextBox)
+Public Sub inserirClick(DataGrid1 As DataGrid, FNumero_Cartao As ComboBox, FValor_Transacao As TextBox, FData_Transacao As TextBox, FDescricao As TextBox)
     Call carregarStrings(DataGrid1, FValor_Transacao, FNumero_Cartao, FData_Transacao)
     If CartaoExiste(FNumero_Cartao.Text) Then
         MsgBox "Cartão encontrado no sistema.", vbInformation

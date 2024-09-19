@@ -328,7 +328,7 @@ Private Sub FValor_Transacao_Change()
 Call TelaInicialAplication.FValorTransacaoChange(FValor_Transacao)
 End Sub
 Private Sub inserir_Click()
-    Call TelaInicialAplication.inserirClick(DataGrid1, FNumero_Cartao, FValor_Transacao, FData_Transacao)
+    Call TelaInicialAplication.inserirClick(DataGrid1, FNumero_Cartao, FValor_Transacao, FData_Transacao, FDescricao)
 End Sub
 Private Sub salvar_Click()
 Call TelaInicialAplication.salvarClick
