@@ -96,7 +96,7 @@ Set BancoConf = New Banco_Conf
     lstTransacoes.Clear
     
     ' Define the SQL query to get all the transactions
-    sql = "SELECT Id_Transacao, Numero_Cartao, Valor_Transacao,Data_Transacao FROM Transacoes LIMIT 10"
+    sql = "SELECT Id_Transacao, Numero_Cartao, Valor_Transacao,Data_Transacao FROM Transacoes LIMIT 100"
     
     ' Open the Recordset
     Set rs = New ADODB.Recordset

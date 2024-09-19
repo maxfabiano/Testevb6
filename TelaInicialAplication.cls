@@ -279,7 +279,7 @@ Dim rs As ADODB.Recordset
     
     ' Define the SQL query to search for transactions based on the search term
     sql = "SELECT Numero_Cartao FROM Clientes " & _
-          "WHERE Numero_Cartao LIKE '%" & searchTerm & "%'"
+          "WHERE Numero_Cartao LIKE '%" & searchTerm & "%' LIMIT 10000"
     Set conn = New ADODB.Connection
     conn.ConnectionString = conectionStr ' Include the database name here
     conn.CursorLocation = adUseClient
@@ -330,7 +330,7 @@ Dim rs As ADODB.Recordset
     FNumero_Cartao.Clear
     
     ' Define the SQL query to get all the transactions
-    sql = "SELECT Numero_Cartao, Nome_Cliente FROM Clientes LIMIT 10"
+    sql = "SELECT Numero_Cartao, Nome_Cliente FROM Clientes LIMIT 10000"
     
     ' Open the Recordset
     Set rs = New ADODB.Recordset
@@ -362,7 +362,7 @@ Public Function CartaoExiste(Numero_Cartao As String) As Boolean
     Dim sql As String
 
     ' SQL query to check if the card number exists in the Clientes table
-    sql = "SELECT Numero_Cartao FROM Clientes WHERE Numero_Cartao = '" & Numero_Cartao & "'"
+    sql = "SELECT Numero_Cartao FROM Clientes WHERE Numero_Cartao = '" & Numero_Cartao & "' LIMIT 10000"
     
     ' Initialize recordset and execute the query
     Set rs = New ADODB.Recordset
@@ -420,7 +420,7 @@ Public Sub ConsultarTransacoes(DataGrid1 As DataGrid)
     conn.CursorLocation = adUseClient
     
     ' Define your SQL query
-    sql = "SELECT * FROM Transacoes where Status=1"
+    sql = "SELECT * FROM Transacoes where Status=1 LIMIT 10000"
     
     ' Open the recordset with a bookmarkable cursor type
     rs.Open sql, conn, adOpenStatic, adLockReadOnly
@@ -547,7 +547,7 @@ Dim rs As ADODB.Recordset
     ' Query to get transactions from the last month
     sql = "SELECT Numero_Cartao, Valor_Transacao, Data_Transacao, Descricao, CategorizarTransacao(Valor_Transacao) AS Categoria " & _
           "FROM Transacoes " & _
-          "WHERE Status = 1 AND Data_Transacao >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH)"
+          "WHERE Status = 1 AND Data_Transacao >= DATE_SUB(CURDATE(), INTERVAL 1 MONTH) LIMIT 10000"
     Set conn = New ADODB.Connection
     conn.ConnectionString = conectionStr ' Include the database name here
     conn.CursorLocation = adUseClient ' Set the cursor location to client-side for a bookmarkable recordset
@@ -598,7 +598,7 @@ Dim sql As String
     ' Query to fetch the transaction details and the category using the function CategorizarTransacao
     sql = "SELECT Id_Transacao, Numero_Cartao, Valor_Transacao, Data_Transacao, Descricao, " & _
           "CategorizarTransacao(Valor_Transacao) AS Categoria " & _
-          "FROM Transacoes"
+          "FROM Transacoes LIMIT 10000"
     
     ' Initialize and open the connection
     Set conn = New ADODB.Connection
@@ -649,7 +649,7 @@ Dim sql As String
     Dim cmd As ADODB.Command
 
     ' Construct the SQL query to filter by Numero_Cartao and date range
-    sql = "SELECT * FROM Transacoes WHERE Data_Transacao >= ? AND Data_Transacao <= ? "
+    sql = "SELECT * FROM Transacoes WHERE Data_Transacao >= ? AND Data_Transacao <= ?  LIMIT 10000"
     Set conn = New ADODB.Connection
     conn.ConnectionString = conectionStr ' Include the database name here
     conn.CursorLocation = adUseClient ' Set the cursor location to client-side for a bookmarkable recordset
@@ -694,7 +694,7 @@ Dim sql As String
     Dim cmd As ADODB.Command
 
     ' Construct the SQL query to filter by Numero_Cartao and date range
-    sql = "SELECT * FROM vw_TransacoesComCategoria WHERE Data_Transacao >= ? AND Data_Transacao <= ? "
+    sql = "SELECT * FROM vw_TransacoesComCategoria WHERE Data_Transacao >= ? AND Data_Transacao <= ? LIMIT 10000"
     Set conn = New ADODB.Connection
     conn.ConnectionString = conectionStr ' Include the database name here
     conn.CursorLocation = adUseClient ' Set the cursor location to client-side for a bookmarkable recordset

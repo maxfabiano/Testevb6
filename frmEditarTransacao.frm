@@ -326,7 +326,7 @@ Set BancoConf = New Banco_Conf
     lstTransacoes.Clear
     
     ' Define the SQL query to get all the transactions
-    sql = "SELECT Id_Transacao, Numero_Cartao, Valor_Transacao,Data_Transacao FROM Transacoes LIMIT 10"
+    sql = "SELECT Id_Transacao, Numero_Cartao, Valor_Transacao,Data_Transacao FROM Transacoes LIMIT 100"
     
     ' Open the Recordset
     Set rs = New ADODB.Recordset
@@ -382,14 +382,15 @@ Private Sub lstTransacoes_Change()
     Next i
     
     ' Define the SQL query to search for transactions based on the search term
-    sql = "SELECT Id_Transacao, Numero_Cartao, Valor_Transacao,Data_Transacao FROM Clientes " & _
+    sql = "SELECT Id_Transacao, Numero_Cartao, Valor_Transacao,Data_Transacao FROM Transacoes " & _
           "WHERE Numero_Cartao LIKE '%" & searchTerm & "%' OR " & _
-          "Valor_Transacao LIKE '%" & searchTerm & "%' LIMIT 10"
+          "Valor_Transacao LIKE '%" & searchTerm & "%' LIMIT 100"
     Set conn = New ADODB.Connection
     conn.ConnectionString = conectionStr ' Include the database name here
     conn.Open
     ' Open the Recordset
     Set rs = New ADODB.Recordset
+    rs.CursorLocation = adUseClient ' Important for static cursor
     rs.Open sql, conn, adOpenStatic, adLockReadOnly
     
     ' Populate the ListBox with the search results
